@@ -4,6 +4,7 @@ buildscript {
   }
   dependencies {
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
   }
 }
 
@@ -12,6 +13,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'cobertura'
 apply plugin: 'application'
 apply plugin: 'idea'
+apply plugin: 'com.github.kt3k.coveralls'
 
 group = 'cn.hjmao.minorDao'
 version = '0.0.1-SNAPSHOT'
