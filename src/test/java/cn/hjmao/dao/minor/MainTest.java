@@ -10,6 +10,11 @@ import static org.testng.Assert.*;
 public class MainTest {
 
   @Test
+  public void testConstruct() throws Exception {
+    assertNotNull(new Main());
+  }
+
+  @Test
   public void testAdd() throws Exception {
     int a = 3;
     int b = 4;
