@@ -1,0 +1,91 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'checkstyle'
+apply plugin: 'cobertura'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'com.github.kt3k.coveralls'
+
+group = 'cn.hjmao.minorDao'
+version = '0.0.1-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  maven {
+    url "http://maven.oschina.net/content/groups/public"
+  }
+}
+
+dependencies {
+  testCompile(
+    ['org.testng:testng:6.8.8'],
+    ['org.mockito:mockito-all:1.9.5']
+  )
+}
+
+sourceSets {
+  main {
+    runtimeClasspath = files(output.resourcesDir) + runtimeClasspath
+  }
+  test {
+    runtimeClasspath = files(output.resourcesDir) + runtimeClasspath
+  }
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+test {
+  useTestNG() {
+    useDefaultListeners = true
+  }
+  testLogging {
+    events "failed" //, "passed", "skipped", "standardOut", "standardError"
+    afterSuite { desc, result ->
+      if (!desc.parent) {
+        println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+      }
+    }
+  }
+}
+
+cobertura {
+  coverageFormats = ['xml', 'html']
+}
+
+task wrapper(type: Wrapper) {
+  description = 'Install Gradle wrapper'
+  gradleVersion = '2.10'
+}
+
+gradle.allprojects {
+  ext.delDirRecursively = { dirname, exceptFile ->
+    def tree = (new File(dirname)).listFiles()
+    tree.each { File file ->
+      if (file.isDirectory()) {
+        delDirRecursively(file.absolutePath, exceptFile)
+        file.delete()
+      } else {
+        if (exceptFile ==null || file.getName() != exceptFile) {
+          file.delete()
+        }
+      }
+    }
+  }
+}
+
